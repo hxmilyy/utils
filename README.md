@@ -1,2 +1,2 @@
 # urlcombination
-combin resource urls in html file
+combine resource urls in html file
