@@ -1,0 +1,15 @@
+{
+  "name": "tuangou",
+  "version": "1.0.0",
+  "description": "tuangou pages",
+  "main": "gruntfile.js",
+  "dependencies": {},
+  "devDependencies": {
+    "esprima": "^3.0.0",
+    "estraverse": "^4.2.0",
+    "glob": "^7.1.1",
+    "jsdom": "^9.5.0"
+  },
+  "author": "JD",
+  "license": "ISC"
+}
