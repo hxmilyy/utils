@@ -1,0 +1,466 @@
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    html,
+    body {
+      width: 100vw;
+      height: 100vh;
+      padding: 0;
+      margin: 0;
+      overflow: hidden scroll;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    *:after,
+    *:before {
+      box-sizing: border-box;
+    }
+
+    .img-responsive {
+      display: display;
+      max-width: 100%;
+      height: auto;
+    }
+
+    .parent {
+      position: relative;
+      border: 1px solid #000;
+      width: 200px;
+      height: 200px;
+    }
+
+    .sized {
+      width: 100px;
+      height: 100px;
+    }
+
+    .box {
+      border: 1px solid #000;
+      background-color: chocolate;
+    }
+
+    .dragable {
+      width: 100px;
+      height: 100px;
+      background-color: #0f0;
+    }
+
+    .carousel {
+      width: 100%;
+      padding: 0;
+      margin: 0;
+    }
+
+    .carousel .slider {
+      display: flex;
+      align-items: center;
+      margin: 0;
+      padding: 0;
+      /* overflow: hidden; */
+      list-style: none;
+      /* white-space: nowrap; */
+    }
+
+    .carousel .slider .item {
+      flex: 100% 0 0;
+    }
+
+    .carousel .slider .item .link {}
+
+    .carousel .slider .item .link img {
+      display: block;
+      max-width: 100%;
+      height: auto;
+    }
+
+    .carousel1 {
+      width: 100%
+    }
+
+    .carousel1 .frames {
+      width: 100%;
+      display: flex;
+      flex-wrap: nowrap;
+      align-items: center;
+    }
+
+    .carousel1 .frames .item {
+      flex: 100% 0 0;
+    }
+
+    /* .carousel1 .frames {
+      display: grid;
+      grid-template-columns: 1fr;
+      grid-template-rows: 1fr;
+      justify-items: center;
+      align-items: center;
+      grid-gap: 0;
+      gap: 0;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      overflow: hidden
+    }
+
+    .carousel1 .frames .item {
+      display: block;
+      //visibility: hidden;
+      grid-area: 1/1/2/2
+    }
+
+    .carousel1 .frames .item.active {
+      visibility: visible;
+      transform: translateX(0);
+      z-index: 10
+    }
+
+    .carousel1 .frames .item.next {
+      visibility: visible;
+      transform: translateX(100%);
+      z-index: 10
+    }
+
+    .carousel1 .frames .item.prev {
+      visibility: visible;
+      transform: translateX(-100%);
+      z-index: 10
+    }
+
+    .carousel1 .frames .item .link {
+      display: block;
+      width: 100%;
+      line-height: 0
+    }
+
+    .carousel1 .frames .item .link .img {
+      width: 100%
+    }
+
+    .in {
+      animation-name: slideIn
+    }
+
+    .in,
+    .out {
+      animation-duration: 1s
+    }
+
+    .out {
+      animation-name: slideOut
+    }
+
+    @keyframes slideIn {
+      0% {
+        transform: translateX(100%)
+      }
+
+      to {
+        transform: translateX(0)
+      }
+    }
+
+    @keyframes slideOut {
+      0% {
+        transform: translateX(0)
+      }
+
+      to {
+        transform: translateX(-100%)
+      }
+    } */
+
+    .animate {
+      animation-name: test;
+      animation-duration: 300ms;
+      animation-timing-function: ease-in;
+      animation-delay: 3s;
+      animation-iteration-count: 1;
+      animation-fill-mode: forwards;
+      animation-direction: alternate;
+    }
+
+    .animate-stop {
+      animation-play-state: paused;
+    }
+
+    .animate-running {
+      animation-play-state: running;
+    }
+
+    @keyframes test {
+      0% {
+        transform: translate3d(0, 0, 0);
+      }
+
+      100% {
+        transform: translate3d(-100%, 0, 0);
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <h1>垂直居中</h1>
+  <section>
+    <div>transform</div>
+    <div class="parent">
+      <div class="box" style="position: absolute;top:50%;left: 50%;transform: translateY(-50%) translateX(-50%);">test
+      </div>
+    </div>
+    <div>margin, 需固定高度</div>
+    <div class="parent">
+      <div class="sized box" style="position: absolute;top:50%;left:50%;margin-top:-50px;margin-left: -50px;"></div>
+    </div>
+    <div></div>
+    <div class="parent">
+      <div class="sized box" style="position:absolute;top:0;bottom:0;left:0;right:0;margin:auto;"></div>
+    </div>
+    <div>table-cell</div>
+    <div class="parent" style="display: table-cell;vertical-align: middle;text-align: center;">
+      <div class="sized box" style="display: inline-block">test</div>
+    </div>
+    <div>grid</div>
+    <div class="parent" style="display: grid;">
+      <div class="sized box" style="justify-self: center;align-self: center;"></div>
+    </div>
+  </section>
+  <section>
+    <div>flex</div>
+    <div class="parent" style="display: flex; justify-content:center; align-items: center;">
+      <div class="sized box"></div>
+    </div>
+  </section>
+  <section>
+    <div>line-height, 只对inline起作用</div>
+    <div class="parent" style="line-height: 200px;">
+      <div class="sized box" style="display: inline;">test</div>
+    </div>
+  </section>
+  <section>
+    <div class="parent">
+      <div class="sized box"></div>
+    </div>
+  </section>
+  <hr>
+  <div class="dragable" draggable="true" style="transform: translateX(10px);"></div>
+  <hr>
+  <div class="carousel1">
+    <div class="frames">
+      <div class="item"><a class="link" href="javascript:void 0"><img class="img-responsive"
+            src="https://m.360buyimg.com/mobilecms/jfs/t1/145851/9/19801/198632/5fe3197bE9ef3fa8f/18ca172a1dfc1002.jpg"
+            alt=""></a></div>
+      <div class="item"><a class="link" href="javascript:void 0"><img class="img-responsive"
+            src="https://m.360buyimg.com/mobilecms/jfs/t1/125294/16/272/345473/5eb45990E15899a00/e8db04848b4da661.jpg"
+            alt=""></a></div>
+      <div class="item"><a class="link" href="javascript:void 0"><img class="img-responsive"
+            src="https://m.360buyimg.com/mobilecms/jfs/t1/146641/14/18549/135682/5fd96d02E7d4d2af0/4810a77f064a93ed.jpg"
+            alt=""></a></div>
+      <div class="item"><a class="link" href="javascript:void 0"><img class="img-responsive"
+            src="https://m.360buyimg.com/mobilecms/jfs/t1/118715/6/7480/98278/5ec399a8E331769ea/300227a743736cc2.jpg"
+            alt=""></a></div>
+      <div class="item"><a class="link" href="javascript:void 0"><img class="img-responsive"
+            src="https://m.360buyimg.com/mobilecms/jfs/t1/144032/23/19818/79862/5fe474d0E959833d0/4e62c06389b8236f.jpg"
+            alt=""></a></div>
+      <div class="item"><a class="link" href="javascript:void 0"><img class="img-responsive"
+            src="https://m.360buyimg.com/mobilecms/jfs/t1/150960/16/12296/128138/5fe5bfc5E03d47670/b50d8d2bfa364641.jpg"
+            alt=""></a></div>
+    </div>
+  </div>
+  <div class="carousel">
+    <ul class="slider">
+      <li class="item"><a class="link" href="https://jd.com"><img
+            src="https://m.360buyimg.com/mobilecms/jfs/t1/145851/9/19801/198632/5fe3197bE9ef3fa8f/18ca172a1dfc1002.jpg" /></a>
+      </li>
+      <li class="item"><a class="link" href="https://jd.com"><img
+            src="https://m.360buyimg.com/mobilecms/jfs/t1/125294/16/272/345473/5eb45990E15899a00/e8db04848b4da661.jpg" /></a>
+      </li>
+      <!-- <li><a href="//jd.com"><img src="https://m.360buyimg.com/mobilecms/jfs/t1/128818/13/15213/118523/5f889e73E078df65e/b603d3a335918879.jpg"/></a></li> -->
+      <li class="item"><a class="link" href="https://jd.com"><img
+            src="https://m.360buyimg.com/mobilecms/jfs/t1/146641/14/18549/135682/5fd96d02E7d4d2af0/4810a77f064a93ed.jpg" /></a>
+      </li>
+      <li class="item"><a class="link" href="https://jd.com"><img
+            src="https://m.360buyimg.com/mobilecms/jfs/t1/118715/6/7480/98278/5ec399a8E331769ea/300227a743736cc2.jpg" /></a>
+      </li>
+      <li class="item"><a class="link" href="https://jd.com"><img
+            src="https://m.360buyimg.com/mobilecms/jfs/t1/144032/23/19818/79862/5fe474d0E959833d0/4e62c06389b8236f.jpg" /></a>
+      </li>
+      <li class="item"><a class="link" href="https://jd.com"><img
+            src="https://m.360buyimg.com/mobilecms/jfs/t1/150960/16/12296/128138/5fe5bfc5E03d47670/b50d8d2bfa364641.jpg" /></a>
+      </li>
+    </ul>
+    <div class="indicator"></div>
+    <div class="arrows">
+
+    </div>
+  </div>
+  <script src="./index.js"></script>
+  <script>
+    let $ = (selector, container) => { return (container ?? document).querySelector(selector) },
+      $$ = (selector, container) => { return (container ?? document).querySelectorAll(selector) },
+      log = function () { console.log.apply(this, [...arguments]) },
+      addEvent = function (target, type, listner) { target.addEventListener(type, listner/* , {once:true} */) };
+
+    ; (function (win, undefined) {
+      let div = $('.dragable'), data = {},
+        touchEvents = ['touchstart', 'touchmove', 'touchcancel', 'touchend'],
+        dragEvents = ['dragstart', 'dragmove', 'dragcancel', 'dragend'];
+
+      addEvent(div, 'touchstart', recordData, { passive: true });
+      addEvent(div, 'touchmove', (e) => { e.preventDefault(); updateData(e); transformDom(div) }, { passive: true });
+      addEvent(div, 'touchcancel', stopRecord);
+      addEvent(div, 'touchend', stopRecord);
+
+      function recordData(e) {
+        if (e.touches.length > 1) {
+          return;
+        }
+        let { clientX, clientY } = e.touches[0];
+        data = { startPosition: { clientX, clientY } };
+      }
+      function updateData(e) {
+        let { clientX: newX, clientY: newY } = e.touches[0];
+        let { clientX, clientY } = data.latestPositon ?? data.startPosition;
+        let xMoved = newX - clientX, yMoved = newY - clientY;
+        data.latestPositon = { clientX: newX, clientY: newY };
+        data.moved = { xMoved, yMoved };
+      }
+      function stopRecord() {
+        //删除data？
+        data = {};
+      }
+      function transformDom(dom) {
+        let matrix = getTransformMatrix(dom);
+        if (matrix) {
+          let { xMoved, yMoved } = data.moved ?? { xMoved: 0, yMoved: 0 };
+          matrix[4] += xMoved;
+          matrix[5] += yMoved;
+        }
+        dom.style.transform = `matrix(${matrix.join(',')})`;
+      }
+    })(window);
+
+
+    ; (function (win, undefined) {
+      //TODO:控制move事件执行频率
+      //TODO:垂直轮播
+      //TODO:加指示圆点，左右箭头
+      //TODO:hover停止自动轮播
+      //TODO:到左右边界后，不反向轮播并补齐边界的下一帧
+      //TODO:整理代码逻辑
+      //TODO:封装成React组件
+      //TODO:上传到github
+      var carousel = $('.carousel1 .frames'),
+        data = null,
+        timer, duration = 3e3,
+        events = [['touchstart', 'touchmove', 'touchend', 'touchcance'], ['mousedown', 'mousemove', 'mouseup', 'mouseout']],
+        width = carousel.offsetWidth,
+        count = $$('.item', carousel).length,
+        direction = width;
+      carousel.style.transform = 'translate3d(0, 0, 0)';
+      carousel.style.transitionProperty = 'transform';
+      carousel.style.transitionDuration = '300ms';
+      carousel.style.transitionTimingFunction = 'ease-in';
+
+      events.forEach(a => {
+        const [start, move, end, cancel] = a;
+        addEvent(carousel, start, recordData, { passive: false });
+        addEvent(carousel, move, (e) => { e.preventDefault(); updateData(e); transformDom(carousel) }, { passive: false });
+        addEvent(carousel, end, stopRecord, { passive: true });
+        addEvent(carousel, cancel, stopRecord, { passive: true });
+      });
+      addEvent(carousel, 'transitionend', () => { console.log('transitionEnd'); });
+      //自动
+      setAuto();
+
+      function setAuto() {
+        timer = setInterval(() => {
+          var [x, y] = getTranslate(carousel);
+          if (x == 0) { direction = -width }
+          if (Math.abs(x) == (width * (count - 1))) { direction = width }
+          setTransform(carousel, [x + direction, 0])
+        }, duration);
+      }
+      function recordData(e) {
+        e.preventDefault();
+        if (e.touches && e.touches.length > 1) {
+          return;
+        }
+        clearInterval(timer);
+        let { clientX, clientY } = e.touches?.item(0) ?? e;
+        data = { startClient: [clientX, clientY], start: getTranslate(carousel) };
+      }
+      function updateData(e) {
+        if (!data || !data.startClient) { return }
+        let { clientX: newX, clientY: newY } = e.touches?.item(0) ?? e;
+        let [clientX, clientY] = data.latestPositon ?? data.startClient;
+        let xMoved = newX - clientX, yMoved = newY - clientY;
+        data.latestPositon = [newX, newY];
+        data.moved = [xMoved, yMoved];
+      }
+      function stopRecord(e) {
+        //判断该往左滑还是往右滑
+        if (!data || !data.current) { return }
+        var { current: [x, y] } = data;
+        var d = x % width;
+        var vlaue;
+
+        //如果当前帧左侧边位置离右边近,往右移
+        if (Math.abs(d) > width / 2) {
+          if (x > 0)
+            value = x + (width - d);
+          else
+            value = x - (width + d);
+        } else {
+          //否则往左移
+          value = x - d;
+        }
+        //TODO:手动拉到最左或最右没有判断边界，导致会滑出屏幕外
+        setTransform(carousel, [value, 0]);
+        //删除data？
+        data = null;
+        //继续自动
+        setAuto();
+      }
+      function transformDom(dom) {
+
+        if (!data || !data.startClient) { return }
+        // console.time('getTranslate');
+        var transformData = getTranslate(carousel);
+        // console.timeEnd('getTranslate');
+        if (!transformData) { return }
+        var [xMoved, yMoved] = data.moved ?? [0, 0];
+        var newTransX, newTransY;
+        newTransX = xMoved + transformData[0];
+        newTransY = yMoved + transformData[1];
+
+        setTransform(carousel, [newTransX, newTransY]);
+        data.current = [newTransX, newTransY];
+      }
+      function getTranslate(dom) {
+        var transform = dom.style.transform || dom.style['-webkit-transform'];
+        var mat = transform.match(/^(translate3d)\((.+)\)$/i);
+        if (mat) {
+          return mat[2].split(',').map(a => {
+            return parseFloat(a);
+          });
+        }
+        return null;
+      }
+      function setTransform(dom, [x, y]) {
+        console.time('setTransform');
+        dom.style.transform = dom.style.webkitTransform = `translate3d(${x}px, ${y}px, 0)`;
+        console.timeEnd('setTransform');
+      }
+    })(window);
+  </script>
+</body>
+
+</html>
