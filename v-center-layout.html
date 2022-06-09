@@ -352,22 +352,25 @@
       //TODO:控制move事件执行频率
       //TODO:垂直轮播
       //TODO:加指示圆点，左右箭头
-      //TODO:hover停止自动轮播
-      //TODO:到左右边界后，不反向轮播并补齐边界的下一帧
+      //TODO:hover停止自动轮播,                               done
+      //TODO:手动拉到最左或最右没有判断边界，导致会滑出屏幕外    done
+      //TODO:到左右边界后，不反向轮播并补齐边界的下一帧  
       //TODO:整理代码逻辑
       //TODO:封装成React组件
-      //TODO:上传到github
+      //TODO:上传到github,                                    done
       var carousel = $('.carousel1 .frames'),
         data = null,
-        timer, duration = 3e3,
+        timer, interval = 3e3,
+        animateDuration = '300ms',
+        animateTimingFunction = 'ease-in',
         events = [['touchstart', 'touchmove', 'touchend', 'touchcance'], ['mousedown', 'mousemove', 'mouseup', 'mouseout']],
         width = carousel.offsetWidth,
         count = $$('.item', carousel).length,
         direction = width;
       carousel.style.transform = 'translate3d(0, 0, 0)';
       carousel.style.transitionProperty = 'transform';
-      carousel.style.transitionDuration = '300ms';
-      carousel.style.transitionTimingFunction = 'ease-in';
+      carousel.style.transitionDuration = animateDuration;
+      carousel.style.transitionTimingFunction = animateTimingFunction;
 
       events.forEach(a => {
         const [start, move, end, cancel] = a;
@@ -376,30 +379,45 @@
         addEvent(carousel, end, stopRecord, { passive: true });
         addEvent(carousel, cancel, stopRecord, { passive: true });
       });
-      addEvent(carousel, 'transitionend', () => { console.log('transitionEnd'); });
+      //transitionEnd
+      addEvent(carousel, 'transitionend', () => { /* console.log('transitionEnd'); */ });
+      //mouseover 停止自动
+      addEvent(carousel, 'mouseover', () => { stopAuto() });
+      //mouseout 继续自动
+      addEvent(carousel, 'mouseout', () => { setAuto() });
       //自动
       setAuto();
 
+      function stopAuto() {
+        clearInterval(timer);
+        timer = null;
+      }
       function setAuto() {
+        //如果正自自动轮播，返回
+        if (timer) { return }
         timer = setInterval(() => {
           var [x, y] = getTranslate(carousel);
-          if (x == 0) { direction = -width }
-          if (Math.abs(x) == (width * (count - 1))) { direction = width }
+          if (x >= 0) { direction = -width }
+          if (-x >= (width * (count - 1))) { direction = width }
           setTransform(carousel, [x + direction, 0])
-        }, duration);
+        }, interval);
       }
       function recordData(e) {
         e.preventDefault();
         if (e.touches && e.touches.length > 1) {
           return;
         }
-        clearInterval(timer);
+        stopAuto();
         let { clientX, clientY } = e.touches?.item(0) ?? e;
         data = { startClient: [clientX, clientY], start: getTranslate(carousel) };
+        carousel.style.transitionDuration = '0ms';
       }
       function updateData(e) {
         if (!data || !data.startClient) { return }
         let { clientX: newX, clientY: newY } = e.touches?.item(0) ?? e;
+        //限制clientX的，不能超出屏幕外边
+        newX = Math.min(Math.max(0, newX), width);
+
         let [clientX, clientY] = data.latestPositon ?? data.startClient;
         let xMoved = newX - clientX, yMoved = newY - clientY;
         data.latestPositon = [newX, newY];
@@ -408,24 +426,63 @@
       function stopRecord(e) {
         //判断该往左滑还是往右滑
         if (!data || !data.current) { return }
-        var { current: [x, y] } = data;
-        var d = x % width;
+        //这里的x值跟轮播方向有关
+        //由于限制了updateRecord时候的clientX不超出屏幕，所以x最大也只能是0(尽管在拖动的时候可能会大于零，但是拖动结束的处理会做限制)
+        //从左向右轮播，x的值一般都是负值
+        //从右向左轮播，x的值一般都是正直
+        var { current: [x, y], start: [sx, sy] } = data;
+        // var d = x % width;
         var vlaue;
+        // console.log(x);
+        // if (x > sx) {
+        //   console.log('往右拖动了--->')
+        // } else if (x == sx) {
+        //   console.log('没变');
+        // } else {
+        //   console.log('往左拖动了<---');
+        // }
+        //出现负数说明往左拖动了,比开始的transform更加小了
+        //这个变化一定不会大于容器宽度width，因为在updateRecord时候就限制了clientX的取值范围
+        //如果这个变化的绝对值小于width的一半，则说明会取消这个变化
+        //如果这个变化的绝对值大于于width的一半，则说明会继续这个变化直到翻页
+        // console.log(`x - sx = ${x - sx}`);
 
-        //如果当前帧左侧边位置离右边近,往右移
-        if (Math.abs(d) > width / 2) {
-          if (x > 0)
-            value = x + (width - d);
-          else
-            value = x - (width + d);
-        } else {
-          //否则往左移
-          value = x - d;
+        //这样用开始点和结束点算比直接用current.x跟width取余数直观点，也好算一点
+        //取余数的话判断逻辑会有点麻烦
+        var delt = x - sx;
+        if (Math.abs(delt) % width > width / 2) {
+          // console.log(`translate的x值应是${sx + width * (delt / Math.abs(delt))}`);
+          value = sx + width * (delt / Math.abs(delt));
+        } else if (Math.abs(delt) < width / 2) {
+          // console.log(`translate的x值应是${sx}`);
+          value = sx;
         }
-        //TODO:手动拉到最左或最右没有判断边界，导致会滑出屏幕外
+
+        //如果当前帧左侧边位置离屏幕右边近,transform增加,但是不能把第一帧移出容器外(在取clientX做了处理，这里就不管了)
+        //if (Math.abs(d) > width / 2) {
+        //  //这里的大于零是在没限制updateRecord中clientX时候写的
+        //  //else是从左到右轮播会走的流程
+        //  //if (x > 0) {
+        //  //  console.log('%c跑到了if',`${x} + (${width} - ${d})`, 'red')
+        //  //  // value = Math.min(0, x + (width - d));
+        //  //  value = x + (width - d);
+        //  //} else {
+        //  //  console.log('跑到了else',`${x} - (${width} + ${d})`)
+        //  //  // value = Math.min(0, x - (width + d));
+        //  //  value = x - (width + d);
+        //  //}
+        //
+        //  value = x - (width + d);
+        //} else {
+        //  //否则往左移，transform减少,但是不能把最后一帧移出容器外
+        //  // value = Math.max(x - d, -width * (count - 1));
+        //  value = x - d;
+        //}
+
         setTransform(carousel, [value, 0]);
-        //删除data？
+        //删除data
         data = null;
+        carousel.style.transitionDuration = animateDuration;
         //继续自动
         setAuto();
       }
@@ -440,8 +497,9 @@
         var newTransX, newTransY;
         newTransX = xMoved + transformData[0];
         newTransY = yMoved + transformData[1];
-
-        setTransform(carousel, [newTransX, newTransY]);
+        setTransform(carousel, [newTransX, 0]);
+        //判断是否移出了左右边界,受轮播方向影响,这里只判断了从左到右轮播
+        newTransX = Math.max(Math.min(0, newTransX), -width * (count - 1));
         data.current = [newTransX, newTransY];
       }
       function getTranslate(dom) {
@@ -455,9 +513,9 @@
         return null;
       }
       function setTransform(dom, [x, y]) {
-        console.time('setTransform');
+        // console.time('setTransform');
         dom.style.transform = dom.style.webkitTransform = `translate3d(${x}px, ${y}px, 0)`;
-        console.timeEnd('setTransform');
+        // console.timeEnd('setTransform');
       }
     })(window);
   </script>
